@@ -16,7 +16,7 @@ function Home() {
   const cardPerPage=6
   let endingIndex=currentPage*cardPerPage
   let startingIndex=endingIndex-cardPerPage
-    if(startingIndex>products.length){
+    if(startingIndex>products?.length){
     setCurrentPage(1)
   }
   let currentProducts=products?.slice(startingIndex,endingIndex)

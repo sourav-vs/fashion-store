@@ -5,7 +5,7 @@ import wishlistReducer from './slices/wishlistSlice';
 const store = configureStore({
     reducer: {
         product: productReducer,
-        wishList: wishlistReducer
+        wishlist: wishlistReducer
     }
 })
 

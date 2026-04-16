@@ -1,59 +1,69 @@
-import React, { useEffect } from 'react'
-import Card from 'react-bootstrap/Card';
-import { useDispatch, useSelector } from 'react-redux';
-import { FaHeartCirclePlus } from "react-icons/fa6";
-import { FaCartPlus } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
-import { removeWishlist } from '../redux/slices/wishlistSlice';
+import React from "react";
+import Card from "react-bootstrap/Card";
+import { FaHeartCircleXmark } from "react-icons/fa6";
+import { FaCartPlus } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { removeWishlist } from "../redux/slices/wishlistSlice";
+import { addToCart } from "../redux/slices/cartSlice";
 
+function WishList() {
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist);
+  const cart = useSelector((state) => state.cart);
 
+  const handleaddtocart = (singleProduct) => {
+  const existingProduct = cart.find(pro => pro.id == singleProduct.id)
 
+  if (existingProduct) {
+    dispatch(addToCart(singleProduct))
+    alert("product quantity incremented")
+  } else {
+    dispatch(addToCart(singleProduct))
+  }
 
-function Wishlist() {
-
-const wishlist=useSelector(state=>state.wishList)
-console.log(wishlist);
-
-const dispatch=useDispatch()
-
- 
-
-  return (
-    <>
-         <div className='row my-3 mx-2'>
-
-         {  
-         wishlist?.length >0 &&
-          wishlist?.map(wish =>(
-
-           <div className='col-lg-4 '>
-                {/* card */}
-                <Card style={{ width: '18rem' }}>
-          <Card.Img variant="top" src={wish?.thumbnail}  />
-          <Card.Body>
-            <Card.Title className='text-primary fw-bold text-center fs-4'>{wish?.title}</Card.Title>
-            <Card.Text>
-              <Link to={`/view/${wish.id}`}>View More</Link>
-            </Card.Text>
-            <div className='d-flex align-items-center justify-content-between'>
-              <button className='btn fs-3 '>
-                <FaHeartCirclePlus onClick={()=>dispatch(removeWishlist(wish?.id))} style={{color:'red'}}/>
-                </button>
-
-              <button className='btn fs-3 '>
-                <FaCartPlus style={{color:'green'}}/>
-                </button>
-            </div>
-          </Card.Body>
-    
-        </Card>
-           </div>
-          ))
-          
-        }
-        </div>
-    </>
-  )
+  dispatch(removeWishlist(singleProduct.id))
 }
 
-export default Wishlist
+
+  return (
+    <div className="m-5 p-5">
+      <h3 className="text-center mb-4">WishList</h3>
+
+      <div className="d-flex flex-wrap justify-content-center gap-4">
+        {wishlist?.length > 0 ? (
+          wishlist?.map((pro) => (
+            <Card key={pro.id} style={{ width: "18rem", borderRadius: "10px", textAlign: "center" }}>
+              <Card.Img variant="top" src={pro.thumbnail} style={{ height: "220px", objectFit: "cover" }} />
+              <Card.Body>
+                <Card.Title>{pro.title.slice(0, 15)}...</Card.Title>
+                <div className="d-flex justify-content-center gap-3">
+                  <button style={{ background: "transparent", border: "none" }}>
+                    <FaHeartCircleXmark onClick={() => dispatch(removeWishlist(pro.id))} style={{ width: "20px", height: "20px", color: "red" }} />
+                  </button>
+                  <button style={{ background: "transparent", border: "none" }}>
+                     <FaCartPlus
+                      onClick={() => handleaddtocart(pro)}
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        color: "green",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </button>
+                </div>
+              </Card.Body>
+            </Card>
+          ))
+        ) : (
+          <div className="text-center my-5 text-danger">No Products in Wishlist</div>
+        )}
+      </div>
+
+
+
+    </div>
+  );
+}
+
+export default WishList;
